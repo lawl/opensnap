@@ -8,11 +8,6 @@
 #include "xdo_functions.h"
 #include "opensnap.h"
 
-#define HIT_TOP 1
-#define HIT_LEFT 2
-#define HIT_RIGHT 3
-#define HIT_BOTTOM 4
-
 int main(int argc, char **argv)
 {
 	Display *dsp = XOpenDisplay( NULL );
@@ -28,16 +23,37 @@ int main(int argc, char **argv)
 
 	int screenNumber = DefaultScreen(dsp);
 	int takeaction=0;
+    int verbose=0;
 	mousestate mousepos;
 	XEvent event;
 	Window activeWindow;
-	char launch[1024];
-    char configbase[1024];
+	char launch[MY_MAXPATH];
+    char configbase[MY_MAXPATH];
     strcpy(configbase,"~/.config/opensnap/");
+
+    int opt=0;
+    while((opt = getopt(argc,argv,"c:dv")) != -1){
+        switch(opt){
+            case 'c':
+               strncpy(configbase,optarg,MY_MAXPATH);
+               configbase[MY_MAXPATH-1]='\0';
+               break;
+            case 'd':
+               if(daemon(0,0) == -1){
+                   perror("daemon");
+                   exit(EXIT_FAILURE);
+               }
+               break;
+            case 'v':
+               verbose=1;
+               break;
+        }
+    }
 	
 	while(1){
 		getMousePosition(dsp, &event, &mousepos);
-        printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
+        if(verbose)
+            printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
 		if(mousepos.state == LEFTCLICK){
             if(mousepos.y==0)
 			    takeaction=HIT_TOP;
@@ -56,20 +72,20 @@ int main(int argc, char **argv)
 				sendMouseUp(dsp,&activeWindow);
             }
             if(takeaction==HIT_TOP){
-				sprintf(launch,"sh %s/%s %u",configbase,"hit_top",activeWindow);
+				sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_top",activeWindow);
 				system(launch);
             }
             if(takeaction==HIT_LEFT){
-				sprintf(launch,"sh %s/%s %u",configbase,"hit_left",activeWindow);
+				sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_left",activeWindow);
 				system(launch);
                 
             }
             if(takeaction==HIT_RIGHT) {
-				sprintf(launch,"sh %s/%s %u",configbase,"hit_right",activeWindow);
+				sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_right",activeWindow);
 				system(launch);
             }
             if(takeaction==HIT_BOTTOM){
-				sprintf(launch,"sh %s/%s %u",configbase,"hit_bottom",activeWindow);
+				sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_bottom",activeWindow);
 				system(launch);
             }
 			takeaction=0;
@@ -105,7 +121,7 @@ void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
 }
 
 
-int getScreenSize(Display *dsp, int &width, int &height){
+void getScreenSize(Display *dsp, int &width, int &height){
 	int num_sizes;
 	Rotation original_rotation;
 

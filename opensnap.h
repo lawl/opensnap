@@ -1,5 +1,10 @@
 #define LEFTCLICK 256
-#define _NET_WM_STATE_ADD 1
+#define HIT_TOP 1
+#define HIT_LEFT 2
+#define HIT_RIGHT 3
+#define HIT_BOTTOM 4
+#define MY_MAXPATH 2048
+
 
 typedef struct {
 	int x;
@@ -10,5 +15,5 @@ typedef struct {
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords);
 void sendMouseUp(Display *dsp, Window *w);
-int getScreenSize(Display *dsp,int &width, int &height);
+void getScreenSize(Display *dsp,int &width, int &height);
 void getFocusedWindow(Display *dsp,Window *w);
