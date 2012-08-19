@@ -1,4 +1,4 @@
 all:
-	g++ -Wall -o opensnap -lX11 -lXrandr opensnap.c
+	g++ -Wall -o bin/opensnap -lX11 -lXrandr src/opensnap.c
 clean:
-	rm opensnap
+	rm bin/opensnap
