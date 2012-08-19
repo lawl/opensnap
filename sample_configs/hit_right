@@ -1,0 +1,11 @@
+# $1 is the window id
+
+# we need to remove the maximized_horz attribute in case the window was maximized with hit_top before
+wmctrl -i -r $1 -b remove,maximized_horz
+
+#maximize it vertically via EWMH so padding (taskbar for example) is respected
+wmctrl -i -r $1 -b add,maximized_vert
+
+# you'll need to edit this line, 960 should be whatever half your screensize is (or 1/4 if you're using 2 monitor setup)
+# 2880 should half your screen width too if you're single monitor or 3/4 if you're using 2 monitor setup
+wmctrl -i -r $1 -e 1,2880,0,960,-1

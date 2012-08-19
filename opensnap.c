@@ -5,11 +5,13 @@
 #include <cstdlib>
 #include <string.h>
 #include <X11/extensions/Xrandr.h>
-#include <X11/Xatom.h>
 #include "xdo_functions.h"
 #include "opensnap.h"
 
-
+#define HIT_TOP 1
+#define HIT_LEFT 2
+#define HIT_RIGHT 3
+#define HIT_BOTTOM 4
 
 int main(int argc, char **argv)
 {
@@ -29,27 +31,47 @@ int main(int argc, char **argv)
 	mousestate mousepos;
 	XEvent event;
 	Window activeWindow;
-	time_t now;
 	char launch[1024];
+    char configbase[1024];
+    strcpy(configbase,"~/.config/opensnap/");
 	
 	while(1){
 		getMousePosition(dsp, &event, &mousepos);
-		//printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
-		if(mousepos.y==0 && mousepos.state == LEFTCLICK){
-			takeaction=1;
+        printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
+		if(mousepos.state == LEFTCLICK){
+            if(mousepos.y==0)
+			    takeaction=HIT_TOP;
+            else if(mousepos.x==0)
+                takeaction=HIT_LEFT;
+            else if(mousepos.x>=screenWidth-1)
+                takeaction=HIT_RIGHT;
+            else if(mousepos.y>=screenHeight-1)
+                takeaction=HIT_BOTTOM;
+            else
+                takeaction=0;
 		}
-		if(takeaction && mousepos.state==0){
-				time(&now);
+		if(mousepos.state==0){
+            if(takeaction){
 				getFocusedWindow(dsp,&activeWindow);
 				sendMouseUp(dsp,&activeWindow);
-				//moveWindowPos(dsp, &activeWindow, 200,500);
-				//maximizeWindow(dsp,&activeWindow);
-				//SetWindowState(dsp,activeWindow,1);
-				sprintf(launch,"wmctrl -i -r %u -b add,maximized_vert,maximized_horz",activeWindow);
+            }
+            if(takeaction==HIT_TOP){
+				sprintf(launch,"sh %s/%s %u",configbase,"hit_top",activeWindow);
 				system(launch);
-				printf("Maximizing!\n");
-			}
-		if(mousepos.state==0 || mousepos.y!=0){
+            }
+            if(takeaction==HIT_LEFT){
+				sprintf(launch,"sh %s/%s %u",configbase,"hit_left",activeWindow);
+				system(launch);
+                
+            }
+            if(takeaction==HIT_RIGHT) {
+				sprintf(launch,"sh %s/%s %u",configbase,"hit_right",activeWindow);
+				system(launch);
+            }
+            if(takeaction==HIT_BOTTOM){
+				sprintf(launch,"sh %s/%s %u",configbase,"hit_bottom",activeWindow);
+				system(launch);
+            }
 			takeaction=0;
 		}
 		usleep(10000);
@@ -69,13 +91,6 @@ void sendMouseUp(Display *dsp, Window *w){
 	XSendEvent(dsp, *w, True, 0xfff, &event);
 	XFlush(dsp);
 	
-}
-
-void moveWindowPos(Display *dsp, Window *w, int x, int y){
-	XWindowChanges xwinc;
-		xwinc.x=x;
-		xwinc.y=y;
-	XConfigureWindow(dsp,*w,CWX+CWY,&xwinc);
 }
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
@@ -98,7 +113,6 @@ int getScreenSize(Display *dsp, int &width, int &height){
 	XRRScreenSize *xrrs = XRRSizes(dsp, 0, &num_sizes);
 
 	XRRScreenConfiguration *conf = XRRGetScreenInfo(dsp, root);
-	short original_rate          = XRRConfigCurrentRate(conf);
 	SizeID original_size_id       = XRRConfigCurrentConfiguration(conf, &original_rotation);
 
 	width=xrrs[original_size_id].width;
@@ -112,6 +126,4 @@ void getFocusedWindow(Display *dsp,Window *w){
 	XGetInputFocus(dsp,&twin,&revert);
 	xdo_window_find_client(dsp,twin,w,XDO_FIND_PARENTS);
 }
-
-
 
