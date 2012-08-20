@@ -25,6 +25,7 @@ int main(int argc, char **argv)
 	int takeaction=0;
 	int verbose=0;
 	int isdrag=0;
+    int offset=10;
 	mousestate mousepos;
 	XEvent event;
 	Window activeWindow;
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
 	strcpy(configbase,"~/.config/opensnap/");
 
 	int opt=0;
-	while((opt = getopt(argc,argv,"c:dvh")) != -1){
+	while((opt = getopt(argc,argv,"c:o:dvh")) != -1){
 		switch(opt){
 			case 'c':
 				strncpy(configbase,optarg,MY_MAXPATH);
@@ -48,6 +49,9 @@ int main(int argc, char **argv)
 			case 'v':
 				verbose=1;
 				break;
+            case 'o':
+                offset=atoi(optarg);
+                break;
 			case 'h':
 			case '?':
 				printHelp();
@@ -61,13 +65,13 @@ int main(int argc, char **argv)
 		if(verbose)
 			printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
 		if(mousepos.state == LEFTCLICK){
-			if(mousepos.y==0)
+			if(mousepos.y<=offset)
 				takeaction=HIT_TOP;
-			else if(mousepos.x==0)
+			else if(mousepos.x<=offset)
 				takeaction=HIT_LEFT;
-			else if(mousepos.x>=screenWidth-1)
+			else if(mousepos.x>=screenWidth-offset-1)
 				takeaction=HIT_RIGHT;
-			else if(mousepos.y>=screenHeight-1)
+			else if(mousepos.y>=screenHeight-offset-1)
 				takeaction=HIT_BOTTOM;
 			else {
 				takeaction=0;
