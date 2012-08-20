@@ -4,8 +4,9 @@ void printHelp(){
     printf("     -c <path>      set your config path to a different directory. The default path\n");
     printf("                    opensnap is looking for configs is ´~/.config/opensnap´.\n");
     printf("     -d             Run opensnap as daemon.\n");
+    printf("     -o             Offset in pixel opensnap should consider hitting the border.\n");
     printf("     -v             Be verbose.\n");
-    printf("     -h             Print this help.\n");
+    printf("     -h             Print this help.\n\n");
     printf("If this is the first time you run opensnap it's highly recommended to copy the config\n");
     printf("files that came along with this program to your home directory. You'll need to set\n");
     printf("some values before everything works.\n");
