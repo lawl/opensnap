@@ -64,7 +64,7 @@ int main(int argc, char **argv)
         getMousePosition(dsp, &event, &mousepos);
         if(verbose)
             printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
-        if(mousepos.state == LEFTCLICK){
+        if((LEFTCLICK & mousepos.state)==LEFTCLICK){
             if(mousepos.y<=offset)
                 takeaction=HIT_TOP;
             else if(mousepos.x<=offset)
@@ -78,31 +78,36 @@ int main(int argc, char **argv)
                 isdrag=1;
             }
         }
-        if(mousepos.state==0 && isdrag){
+        if(verbose)printf("Takeaction is: %d, isdrag is: %d\n",takeaction,isdrag);
+        if(mousepos.state==16 && isdrag){
             if(takeaction){
                 getFocusedWindow(dsp,&activeWindow);
                 sendMouseUp(dsp,&activeWindow);
             }
             if(takeaction==HIT_TOP){
+                if(verbose)printf("HIT_TOP\n");
                 sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_top",activeWindow);
                 system(launch);
             }
             if(takeaction==HIT_LEFT){
+                if(verbose)printf("HIT_LEFT\n");
                 sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_left",activeWindow);
                 system(launch);
 
             }
             if(takeaction==HIT_RIGHT) {
+                if(verbose)printf("HIT_RIGHT\n");
                 sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_right",activeWindow);
                 system(launch);
             }
             if(takeaction==HIT_BOTTOM){
+                if(verbose)printf("HIT_BOTTOM\n");
                 sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_bottom",activeWindow);
                 system(launch);
             }
             takeaction=0;
         }
-        if(mousepos.state != LEFTCLICK)isdrag=0;
+        if((LEFTCLICK & mousepos.state) != LEFTCLICK)isdrag=0;
         usleep(10000);
     }
     XCloseDisplay(dsp);
