@@ -86,23 +86,23 @@ int main(int argc, char **argv)
             }
             if(takeaction==HIT_TOP){
                 if(verbose)printf("HIT_TOP\n");
-                sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_top",activeWindow);
+                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_top",activeWindow);
                 system(launch);
             }
             if(takeaction==HIT_LEFT){
                 if(verbose)printf("HIT_LEFT\n");
-                sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_left",activeWindow);
+                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_left",activeWindow);
                 system(launch);
 
             }
             if(takeaction==HIT_RIGHT) {
                 if(verbose)printf("HIT_RIGHT\n");
-                sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_right",activeWindow);
+                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_right",activeWindow);
                 system(launch);
             }
             if(takeaction==HIT_BOTTOM){
                 if(verbose)printf("HIT_BOTTOM\n");
-                sprintf(launch,"/bin/sh %s/%s %u",configbase,"hit_bottom",activeWindow);
+                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_bottom",activeWindow);
                 system(launch);
             }
             takeaction=0;

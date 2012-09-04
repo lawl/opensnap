@@ -100,7 +100,6 @@ unsigned char *xdo_getwinprop(Display *dsp, Window window, Atom atom,
   Atom actual_type;
   int actual_format;
   unsigned long _nitems;
-  unsigned long nbytes;
   unsigned long bytes_after; /* unused */
   unsigned char *prop;
   int status;
@@ -116,15 +115,6 @@ unsigned char *xdo_getwinprop(Display *dsp, Window window, Atom atom,
     fprintf(stderr, "XGetWindowProperty failed!");
     return NULL;
   }
-
-  if (actual_format == 32)
-    nbytes = sizeof(long);
-  else if (actual_format == 16)
-    nbytes = sizeof(short);
-  else if (actual_format == 8)
-    nbytes = 1;
-  else if (actual_format == 0)
-    nbytes = 0;
 
   if (nitems != NULL) {
     *nitems = _nitems;
