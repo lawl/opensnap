@@ -1,2 +1,9 @@
-# $1 is the window id
-wmctrl -i -c $1
+#!/bin/sh
+
+WINDOW_ID="$1"
+
+# notification, to see what we're doing here
+echo "hit_bottom"
+
+# close the window gracefully
+wmctrl -i -c $WINDOW_ID
