@@ -3,21 +3,29 @@ OPENSNAP
 
 What's that?
 ------------
-It tries to bring to aero snap like features to openbox.
+Opensnap brings the Aero Snap feature to Openbox.
+
 
 Does this work with other window managers?
 ------------------------------------------
-I don't know, the goal was to make it work with every EWMH compilant window manager. But I can't be bothered to try it out :)
+The goal was to make it work with every EWMH compliant window manager.
 
-So how can I use it?
--------------------
-make
-bin/opensnap -h
-should tell you all you need to know.
-Don't forget to copy the sample configs to ~/.config/opensnap/
-And edit them. They'll tell you what you need to edit.
 
 Dependencies?
 -------------
-You'll need wmctrl with the default config. On most debian systems you should be able just just
-apt-get install wmctrl
+You'll need wmctrl.
+
+On most debian systems you should be able to install them by:
+
+sudo apt-get install wmctrl
+
+
+How can I use it?
+-------------------
+This should tell you all you need to know:
+
+opensnap -h
+
+Copy the sample configs to ~/.config/opensnap/ and edit them.
+
+They are mostly self explaining.
