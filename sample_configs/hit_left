@@ -1,10 +1,24 @@
-# $1 is the window id
+#!/bin/sh
+
+SCREEN_WIDTH="$(xrandr -q  2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f1)"
+SCREEN_HEIGHT="$(xrandr -q 2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f2)"
+
+WINDOW_ID="$1"
+
+GRAVITY="0"
+X="0"
+Y="0"
+WIDTH="$(($SCREEN_WIDTH/2))"
+HEIGHT="-1"
+
+# notification, to see what we're doing here
+echo "hit_left"
 
 # we need to remove the maximized_horz attribute in case the window was maximized with hit_top before
-wmctrl -i -r $1 -b remove,maximized_horz
+wmctrl -i -r "$WINDOW_ID" -b remove,maximized_horz
 
-#maximize it vertically via EWMH so padding (taskbar for example) is respected
-wmctrl -i -r $1 -b add,maximized_vert 
+# maximize it vertically via EWMH so padding (taskbar for example) is respected
+wmctrl -i -r "$WINDOW_ID" -b add,maximized_vert 
 
-# you'll need to edit this line, 960 should be whatever half your screensize is (or 1/4 if you're using 2 monitor setup)
-wmctrl -i -r $1 -e 1,0,0,960,-1
+# change position and size of the window
+wmctrl -i -r "$WINDOW_ID" -e $GRAVITY,$X,$Y,$WIDTH,$HEIGHT
