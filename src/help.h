@@ -8,6 +8,7 @@ void printHelp(){
     printf("  -o <PIXEL>       offset in pixel\n");
     printf("  -v               be verbose\n");
     printf("  -h               print this help\n");
+    printf("  -V               show version\n");
     printf("\n");
     printf("Example:\n");
     printf("\n");
