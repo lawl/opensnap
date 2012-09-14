@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     int takeaction=0;
     int verbose=0;
     int isdrag=0;
-    int offset=10;
+    int offset=0;
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
             takeaction=0;
         }
         if((LEFTCLICK & mousepos.state) != LEFTCLICK)isdrag=0;
-        usleep(10000);
+        usleep(50000);
     }
     XCloseDisplay(dsp);
 
