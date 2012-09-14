@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <time.h>
 #include <cstdlib>
 #include <string.h>
@@ -33,8 +34,17 @@ int main(int argc, char **argv)
     char configbase[MY_MAXPATH];
     strcpy(configbase,"~/.config/opensnap/");
 
+    struct option longopts[] = {
+        {"config",  1, NULL, 'c'},
+        {"offset",  1, NULL, 'o'},
+        {"daemon",  0, NULL, 'd'},
+        {"verbose", 0, NULL, 'v'},
+        {"help",    0, NULL, 'h'},
+        {"version", 0, NULL, 'V'},
+        {0, 0, 0, 0}};
+
     int opt=0;
-    while((opt = getopt(argc,argv,"c:o:dvh")) != -1){
+    while((opt = getopt_long(argc,argv,"c:o:dvh",longopts,NULL)) != -1){
         switch(opt){
             case 'c':
                 strncpy(configbase,optarg,MY_MAXPATH);
