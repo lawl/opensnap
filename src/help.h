@@ -4,9 +4,9 @@ void printHelp(){
     printf("Options:\n");
     printf("\n");
     printf("  -d, --daemon                     run opensnap as daemon\n");
-    printf("  -s, --script <PATH>              set your script path to <PATH>\n");
     printf("  -o, --offset <PIXEL>             set offset in pixel\n");
     printf("  -t, --threshold <MSECONDS>       set threshold in microseconds\n");
+    printf("  -s, --script <PATH>              set your script path to <PATH>\n");
     printf("  -v, --verbose                    be verbose\n");
     printf("  -h, --help                       print this help\n");
     printf("  -V, --version                    show version\n");
