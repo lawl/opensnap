@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     strcpy(configbase,"~/.config/opensnap/");
 
     struct option longopts[] = {
-        {"config",     1, NULL, 'c'},
+        {"script",     1, NULL, 's'},
         {"offset",     1, NULL, 'o'},
         {"threshold",  1, NULL, 't'},
         {"daemon",     0, NULL, 'd'},
@@ -47,9 +47,9 @@ int main(int argc, char **argv)
         {0, 0, 0, 0}};
 
     int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:t:dvhV",longopts,NULL)) != -1){
+    while((opt = getopt_long(argc,argv,"s:o:t:dvhV",longopts,NULL)) != -1){
         switch(opt){
-            case 'c':
+            case 's':
                 strncpy(configbase,optarg,MY_MAXPATH);
                 configbase[MY_MAXPATH-1]='\0';
                 break;
