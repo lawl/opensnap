@@ -28,6 +28,7 @@ int main(int argc, char **argv)
     int verbose=0;
     int isdrag=0;
     int offset=0;
+    int threshold=50000;
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
@@ -36,16 +37,17 @@ int main(int argc, char **argv)
     strcpy(configbase,"~/.config/opensnap/");
 
     struct option longopts[] = {
-        {"config",  1, NULL, 'c'},
-        {"offset",  1, NULL, 'o'},
-        {"daemon",  0, NULL, 'd'},
-        {"verbose", 0, NULL, 'v'},
-        {"help",    0, NULL, 'h'},
-        {"version", 0, NULL, 'V'},
+        {"config",     1, NULL, 'c'},
+        {"offset",     1, NULL, 'o'},
+        {"threshold",  1, NULL, 't'},
+        {"daemon",     0, NULL, 'd'},
+        {"verbose",    0, NULL, 'v'},
+        {"help",       0, NULL, 'h'},
+        {"version",    0, NULL, 'V'},
         {0, 0, 0, 0}};
 
     int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:dvhV",longopts,NULL)) != -1){
+    while((opt = getopt_long(argc,argv,"c:o:t:dvhV",longopts,NULL)) != -1){
         switch(opt){
             case 'c':
                 strncpy(configbase,optarg,MY_MAXPATH);
@@ -62,6 +64,9 @@ int main(int argc, char **argv)
                 break;
             case 'o':
                 offset=atoi(optarg);
+                break;
+            case 't':
+                threshold=atoi(optarg);
                 break;
             case 'h':
             case '?':
@@ -123,7 +128,7 @@ int main(int argc, char **argv)
             takeaction=0;
         }
         if((LEFTCLICK & mousepos.state) != LEFTCLICK)isdrag=0;
-        usleep(50000);
+        usleep(threshold);
     }
     XCloseDisplay(dsp);
 
