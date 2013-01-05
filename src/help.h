@@ -1,15 +1,17 @@
 void printHelp(){
-    printf("Hello, it seems you're struggling with using this program.\n");
-    printf("Let me try to be of assistance. First let me show you the valid command line switches.\n\n");
-    printf("     -c <path>      set your config path to a different directory. The default path\n");
-    printf("                    opensnap is looking for configs is ´~/.config/opensnap´.\n");
-    printf("     -d             Run opensnap as daemon.\n");
-    printf("     -o             Offset in pixel opensnap should consider hitting the border.\n");
-    printf("     -v             Be verbose.\n");
-    printf("     -h             Print this help.\n\n");
-    printf("If this is the first time you run opensnap it's highly recommended to copy the config\n");
-    printf("files that came along with this program to your home directory. You'll need to set\n");
-    printf("some values before everything works.\n");
-    printf("                   mkdir -p ~/.config/opensnap\n");
-    printf("                   cp sample_configs/* ~/.config/opensnap/\n");
+    printf("Usage: opensnap <OPTION>\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("\n");
+    printf("  -d, --daemon                     run opensnap as daemon\n");
+    printf("  -o, --offset <PIXEL>             set offset in pixel\n");
+    printf("  -t, --threshold <MSECONDS>       set threshold in microseconds\n");
+    printf("  -s, --script <PATH>              set script path to <PATH>\n");
+    printf("  -v, --verbose                    be verbose\n");
+    printf("  -V, --version                    show version\n");
+    printf("  -h, --help                       print this help\n");
+    printf("\n");
+    printf("Example:\n");
+    printf("\n");
+    printf("opensnap -d -s /etc/opensnap\n");
 }

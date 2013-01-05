@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <time.h>
 #include <cstdlib>
 #include <string.h>
@@ -8,6 +9,7 @@
 #include "xdo_functions.h"
 #include "opensnap.h"
 #include "help.h"
+#include "version.h"
 
 int main(int argc, char **argv)
 {
@@ -25,7 +27,8 @@ int main(int argc, char **argv)
     int takeaction=0;
     int verbose=0;
     int isdrag=0;
-    int offset=10;
+    int offset=0;
+    int threshold=50000;
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
@@ -33,10 +36,20 @@ int main(int argc, char **argv)
     char configbase[MY_MAXPATH];
     strcpy(configbase,"~/.config/opensnap/");
 
+    struct option longopts[] = {
+        {"script",     1, NULL, 's'},
+        {"offset",     1, NULL, 'o'},
+        {"threshold",  1, NULL, 't'},
+        {"daemon",     0, NULL, 'd'},
+        {"verbose",    0, NULL, 'v'},
+        {"help",       0, NULL, 'h'},
+        {"version",    0, NULL, 'V'},
+        {0, 0, 0, 0}};
+
     int opt=0;
-    while((opt = getopt(argc,argv,"c:o:dvh")) != -1){
+    while((opt = getopt_long(argc,argv,"s:o:t:dvhV",longopts,NULL)) != -1){
         switch(opt){
-            case 'c':
+            case 's':
                 strncpy(configbase,optarg,MY_MAXPATH);
                 configbase[MY_MAXPATH-1]='\0';
                 break;
@@ -52,10 +65,17 @@ int main(int argc, char **argv)
             case 'o':
                 offset=atoi(optarg);
                 break;
+            case 't':
+                threshold=atoi(optarg);
+                break;
             case 'h':
             case '?':
                 printHelp();
                 exit(EXIT_FAILURE);
+                break;
+            case 'V':
+                printVersion();
+                exit(0);
                 break;
         }
     }
@@ -108,7 +128,7 @@ int main(int argc, char **argv)
             takeaction=0;
         }
         if((LEFTCLICK & mousepos.state) != LEFTCLICK)isdrag=0;
-        usleep(10000);
+        usleep(threshold);
     }
     XCloseDisplay(dsp);
 

@@ -1,0 +1,10 @@
+sudo apt-get install libc6-dev libx11-dev libxrandr-dev
+
+git clone https://github.com/ikem-krueger/opensnap.git
+
+cd opensnap
+
+make
+
+bin/opensnap -s sample_configs/
+
