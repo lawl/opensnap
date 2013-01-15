@@ -2,8 +2,5 @@
 
 WINDOW_ID="$1"
 
-# notification, to see what we're doing here
-echo "hit_bottom"
-
 # close the window gracefully
 wmctrl -i -c $WINDOW_ID

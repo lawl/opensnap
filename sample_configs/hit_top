@@ -2,8 +2,5 @@
 
 WINDOW_ID="$1"
 
-# notification, to see what we're doing here
-echo "hit_top"
-
 # maximize it vertically/horicontally via EWMH so padding (taskbar for example) is respected
 wmctrl -i -r "$WINDOW_ID" -b add,maximized_vert,maximized_horz

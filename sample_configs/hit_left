@@ -1,18 +1,16 @@
 #!/bin/sh
 
-SCREEN_WIDTH="$(xrandr -q  2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f1)"
-SCREEN_HEIGHT="$(xrandr -q 2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f2)"
+SCREEN_WIDTH="$(xrandr -q  2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f1|head -n1)"
+SCREEN_HEIGHT="$(xrandr -q 2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f2|head -n1)"
 
 WINDOW_ID="$1"
 
 GRAVITY="0"
 X="0"
 Y="0"
-WIDTH="$(($SCREEN_WIDTH/2))"
+#For dual-head setups please hardcode your total screen width in px if it's not working for you
+WIDTH=$(($SCREEN_WIDTH/2))
 HEIGHT="-1"
-
-# notification, to see what we're doing here
-echo "hit_left"
 
 # we need to remove the maximized_horz attribute in case the window was maximized with hit_top before
 wmctrl -i -r "$WINDOW_ID" -b remove,maximized_horz
