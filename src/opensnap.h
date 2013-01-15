@@ -12,6 +12,14 @@ typedef struct {
 	int state;
 } mousestate;
 
+const char *SCRIPT_NAMES[] = {
+    0,
+    "hit_top",
+    "hit_left",
+    "hit_right",
+    "hit_bottom"
+};
+
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords);
 void sendMouseUp(Display *dsp, Window *w);

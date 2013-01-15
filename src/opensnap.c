@@ -23,7 +23,7 @@ int main(int argc, char **argv)
     getFocusedWindow(dsp,&win);
 
 
-    int takeaction=0;
+    int action=0;
     int verbose=0;
     int isdrag=0;
     int offset=10;
@@ -76,46 +76,28 @@ int main(int argc, char **argv)
             printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
         if((LEFTCLICK & mousepos.state)==LEFTCLICK){
             if(mousepos.y<=offset)
-                takeaction=HIT_TOP;
+                action=HIT_TOP;
             else if(mousepos.x<=offset)
-                takeaction=HIT_LEFT;
+                action=HIT_LEFT;
             else if(mousepos.x>=screenWidth-offset-1)
-                takeaction=HIT_RIGHT;
+                action=HIT_RIGHT;
             else if(mousepos.y>=screenHeight-offset-1)
-                takeaction=HIT_BOTTOM;
+                action=HIT_BOTTOM;
             else {
-                takeaction=0;
+                action=0;
                 isdrag=1;
             }
         }
-        if(verbose)printf("Takeaction is: %d, isdrag is: %d\n",takeaction,isdrag);
+        if(verbose)printf("action is: %d, isdrag is: %d\n",action,isdrag);
         if((16 & mousepos.state) == mousepos.state && isdrag){
-            if(takeaction){
+            if(action){
                 getFocusedWindow(dsp,&activeWindow);
                 sendMouseUp(dsp,&activeWindow);
-            }
-            if(takeaction==HIT_TOP){
-                if(verbose)printf("HIT_TOP\n");
-                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_top",activeWindow);
+                if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
+                sprintf(launch,"/bin/sh %s/%s %lu",configbase,SCRIPT_NAMES[action],activeWindow);
                 system(launch);
             }
-            if(takeaction==HIT_LEFT){
-                if(verbose)printf("HIT_LEFT\n");
-                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_left",activeWindow);
-                system(launch);
-
-            }
-            if(takeaction==HIT_RIGHT) {
-                if(verbose)printf("HIT_RIGHT\n");
-                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_right",activeWindow);
-                system(launch);
-            }
-            if(takeaction==HIT_BOTTOM){
-                if(verbose)printf("HIT_BOTTOM\n");
-                sprintf(launch,"/bin/sh %s/%s %lu",configbase,"hit_bottom",activeWindow);
-                system(launch);
-            }
-            takeaction=0;
+            action=0;
         }
         if((LEFTCLICK & mousepos.state) != LEFTCLICK)isdrag=0;
         usleep(10000);
