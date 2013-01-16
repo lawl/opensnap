@@ -25,3 +25,6 @@ void getMousePosition(Display *dsp, XEvent *event, mousestate *cords);
 void sendMouseUp(Display *dsp, Window *w);
 void getScreenSize(Display *dsp,int &width, int &height);
 void getFocusedWindow(Display *dsp,Window *w);
+void getNetFrameExtents(Display *dpy, Window *w, int *top);
+void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, unsigned int *h);
+void findParentWindow(Display *dsp, Window *w, Window *parent);

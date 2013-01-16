@@ -20,7 +20,9 @@ int main(int argc, char **argv)
     getScreenSize(dsp,screenWidth,screenHeight);
 
     Window win;
+    Window parentWin;
     getFocusedWindow(dsp,&win);
+    findParentWindow(dsp,&win,&parentWin);
 
 
     int action=0;
@@ -92,9 +94,10 @@ int main(int argc, char **argv)
         if((16 & mousepos.state) == mousepos.state && isdrag){
             if(action){
                 getFocusedWindow(dsp,&activeWindow);
-                sendMouseUp(dsp,&activeWindow);
+                findParentWindow(dsp,&activeWindow,&parentWin);
+                sendMouseUp(dsp,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
-                sprintf(launch,"/bin/sh %s/%s %lu",configbase,SCRIPT_NAMES[action],activeWindow);
+                sprintf(launch,"/bin/sh %s/%s %lu",configbase,SCRIPT_NAMES[action],parentWin);
                 system(launch);
             }
             action=0;
@@ -147,9 +150,47 @@ void getScreenSize(Display *dsp, int &width, int &height){
 }
 
 void getFocusedWindow(Display *dsp,Window *w){
-    Window twin;
-    int revert;
-    XGetInputFocus(dsp,&twin,&revert);
-    xdo_window_find_client(dsp,twin,w,XDO_FIND_PARENTS);
+    int revert, titlebarHeight, x, y;
+    unsigned int wi,h;
+    XGetInputFocus(dsp,w,&revert);
+    getNetFrameExtents(dsp,w,&titlebarHeight);
+    getWindowRect(dsp, w, &x, &y, &wi, &h);
+    printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i\n",*w,titlebarHeight,y,x,h,wi);
 }
 
+void findParentWindow(Display *dsp, Window *w, Window *parent){
+    xdo_window_find_client(dsp,*w,parent,XDO_FIND_PARENTS);
+}
+
+void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, unsigned int *h){
+    unsigned int bw,d;
+    int junkx, junky;
+    Window junkroot;
+    XGetGeometry(dsp,*win,&junkroot,&junkx,&junky,w,h,&bw,&d);
+    XTranslateCoordinates(dsp, *win, junkroot, junkx, junky, x, y, &junkroot);
+}
+
+void getNetFrameExtents(Display *dpy, Window *w, int *top) {
+    long *extents;
+    Atom actual_type;
+    int actual_format;
+    unsigned long nitems, bytes_after;
+    unsigned char *data = NULL;
+    int result;
+     
+    *top = 0;
+     
+    result = XGetWindowProperty(
+            dpy, *w, XInternAtom(dpy, "_NET_FRAME_EXTENTS", False),
+            0, 4, False, AnyPropertyType,
+            &actual_type, &actual_format,
+            &nitems, &bytes_after, &data);
+     
+    if (result == Success) {
+        if ((nitems == 4) && (bytes_after == 0)) {
+            extents = (long *)data;
+            *top = (int) *(extents + 2);
+        }
+        XFree(data);
+    }
+}
