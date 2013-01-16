@@ -19,6 +19,10 @@ On most debian systems you should be able to install it by:
 
 sudo apt-get install wmctrl
 
+If you want to build it make sure you have these as well:
+
+sudo apt-get install build-essential libx11-dev libxrandr-dev
+
 
 How can I use it?
 -------------------
