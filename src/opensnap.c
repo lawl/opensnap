@@ -28,7 +28,10 @@ int main(int argc, char **argv)
     int action=0;
     int verbose=0;
     int isdrag=0;
+    int isinitialclick=1;
     int offset=10;
+    int titlebarHeight, x, y, junkx, junky;
+    unsigned int wi,h, junkwi, junkh;
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
@@ -86,9 +89,21 @@ int main(int argc, char **argv)
             else if(mousepos.y>=screenHeight-offset-1)
                 action=HIT_BOTTOM;
             else {
+                if(!isdrag && isinitialclick) {
+                    getFocusedWindow(dsp,&activeWindow);
+                    findParentWindow(dsp,&activeWindow,&parentWin);
+                    getNetFrameExtents(dsp,&parentWin,&titlebarHeight);
+                    getWindowRect(dsp, &parentWin, &junkx, &junky, &wi, &h);
+                    getWindowRect(dsp, &activeWindow, &x, &y, &junkwi, &junkh); // we need the size of the parent win, but the x/y coordinates of the child, don't ask me why, otherwise the values are off a bit
+                    if(verbose)printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i\n",parentWin,titlebarHeight,x,y,wi,h);
+                    if(mousepos.x>=x && mousepos.x <= (x+wi) &&
+                            mousepos.y >= (y-titlebarHeight) && mousepos.y <= y){
+                        isdrag=1;
+                    }
+                }
                 action=0;
-                isdrag=1;
             }
+            isinitialclick=false;
         }
         if(verbose)printf("action is: %d, isdrag is: %d\n",action,isdrag);
         if((16 & mousepos.state) == mousepos.state && isdrag){
@@ -102,7 +117,10 @@ int main(int argc, char **argv)
             }
             action=0;
         }
-        if((LEFTCLICK & mousepos.state) != LEFTCLICK)isdrag=0;
+        if((LEFTCLICK & mousepos.state) != LEFTCLICK){
+            isdrag=0;
+            isinitialclick=1;
+        }
         usleep(10000);
     }
     XCloseDisplay(dsp);
@@ -150,12 +168,8 @@ void getScreenSize(Display *dsp, int &width, int &height){
 }
 
 void getFocusedWindow(Display *dsp,Window *w){
-    int revert, titlebarHeight, x, y;
-    unsigned int wi,h;
+    int revert;
     XGetInputFocus(dsp,w,&revert);
-    getNetFrameExtents(dsp,w,&titlebarHeight);
-    getWindowRect(dsp, w, &x, &y, &wi, &h);
-    printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i\n",*w,titlebarHeight,y,x,h,wi);
 }
 
 void findParentWindow(Display *dsp, Window *w, Window *parent){
@@ -165,7 +179,7 @@ void findParentWindow(Display *dsp, Window *w, Window *parent){
 void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, unsigned int *h){
     unsigned int bw,d;
     int junkx, junky;
-    Window junkroot;
+    Window junkroot =  RootWindow(dsp, 0);
     XGetGeometry(dsp,*win,&junkroot,&junkx,&junky,w,h,&bw,&d);
     XTranslateCoordinates(dsp, *win, junkroot, junkx, junky, x, y, &junkroot);
 }
