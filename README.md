@@ -15,7 +15,7 @@ Dependencies?
 -------------
 You'll need wmctrl.
 
-On most debian systems you should be able to install them by:
+On most debian systems you should be able to install it by:
 
 sudo apt-get install wmctrl
 
@@ -26,6 +26,6 @@ This should tell you all you need to know:
 
 opensnap -h
 
-Copy the sample configs to ~/.config/opensnap/ and edit them.
+Copy the sample configs to ~/.config/opensnap/ (and edit them if needed).
 
 They are mostly self explaining.
