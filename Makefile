@@ -1,5 +1,5 @@
 all:
 	mkdir -p bin
-	g++ -Wall -o bin/opensnap -lX11 -lXrandr src/opensnap.c
+	g++ -Wall -o bin/opensnap src/opensnap.c -lX11 -lXrandr
 clean:
 	rm bin/opensnap
