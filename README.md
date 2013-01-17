@@ -17,18 +17,18 @@ You'll need wmctrl.
 
 On most debian systems you should be able to install it by:
 
-sudo apt-get install wmctrl
+    sudo apt-get install wmctrl
 
 If you want to build it make sure you have these as well:
 
-sudo apt-get install build-essential libx11-dev libxrandr-dev
+    sudo apt-get install build-essential libx11-dev libxrandr-dev
 
 
 How can I use it?
 -------------------
 This should tell you all you need to know:
 
-opensnap -h
+    opensnap -h
 
 Copy the sample configs to ~/.config/opensnap/ (and edit them if needed).
 
