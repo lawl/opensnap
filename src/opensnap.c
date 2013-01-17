@@ -9,6 +9,7 @@
 #include "xdo_functions.h"
 #include "opensnap.h"
 #include "help.h"
+#include "version.h"
 
 int main(int argc, char **argv)
 {
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
         {0, 0, 0, 0}};
 
     int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:ds:vh",longopts,NULL)) != -1){
+    while((opt = getopt_long(argc,argv,"c:o:ds:vVh",longopts,NULL)) != -1){
         switch(opt){
             case 'c':
                 strncpy(configbase,optarg,MY_MAXPATH);
@@ -68,6 +69,9 @@ int main(int argc, char **argv)
             case 'v':
                 verbose=1;
                 break;
+            case 'V':
+                printf("opensnap version %s\n", versionstring);
+                exit(EXIT_SUCCESS);
             case 'o':
                 offset=atoi(optarg);
                 break;
