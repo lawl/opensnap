@@ -96,7 +96,7 @@ int main(int argc, char **argv)
                     getWindowRect(dsp, &parentWin, &junkx, &junky, &wi, &h);
                     getWindowRect(dsp, &activeWindow, &x, &y, &junkwi, &junkh); // we need the size of the parent win, but the x/y coordinates of the child, don't ask me why, otherwise the values are off a bit
                     if(verbose)printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i\n",parentWin,titlebarHeight,x,y,wi,h);
-                    if(mousepos.x>=x && mousepos.x <= (x+wi) &&
+                    if(mousepos.x>=x && mousepos.x <= (x+(int)wi) &&
                             mousepos.y >= (y-titlebarHeight) && mousepos.y <= y){
                         isdrag=1;
                     }
