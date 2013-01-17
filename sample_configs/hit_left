@@ -1,15 +1,15 @@
 #!/bin/sh
 
-SCREEN_WIDTH="$(xrandr -q  2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f1|head -n1)"
-SCREEN_HEIGHT="$(xrandr -q 2>/dev/null|grep '*'|awk '{print $1}'|cut -dx -f2|head -n1)"
-
 WINDOW_ID="$1"
+NUMBER_OF_SCREENS="$2"
+SCREEN_WIDTH="$3"
+SCREEN_HEIGHT="$4"
 
 GRAVITY="0"
 X="0"
 Y="0"
-#For dual-head setups please hardcode your total screen width in px if it's not working for you
-WIDTH=$(($SCREEN_WIDTH/2))
+
+WIDTH=$(($SCREEN_WIDTH/($NUMBER_OF_SCREENS*2)))
 HEIGHT="-1"
 
 # we need to remove the maximized_horz attribute in case the window was maximized with hit_top before

@@ -24,12 +24,12 @@ int main(int argc, char **argv)
     getFocusedWindow(dsp,&win);
     findParentWindow(dsp,&win,&parentWin);
 
-
     int action=0;
     int verbose=0;
     int isdrag=0;
     int isinitialclick=1;
     int offset=10;
+    int numberOfScreens = getNumberOfScreens(dsp);
     int titlebarHeight, x, y, junkx, junky;
     unsigned int wi,h, junkwi, junkh;
     mousestate mousepos;
@@ -42,6 +42,7 @@ int main(int argc, char **argv)
     struct option longopts[] = {
         {"config",  1, NULL, 'c'},
         {"offset",  1, NULL, 'o'},
+        {"screens", 1, NULL, 's'},
         {"daemon",  0, NULL, 'd'},
         {"verbose", 0, NULL, 'v'},
         {"help",    0, NULL, 'h'},
@@ -49,7 +50,7 @@ int main(int argc, char **argv)
         {0, 0, 0, 0}};
 
     int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:dvh",longopts,NULL)) != -1){
+    while((opt = getopt_long(argc,argv,"c:o:ds:vh",longopts,NULL)) != -1){
         switch(opt){
             case 'c':
                 strncpy(configbase,optarg,MY_MAXPATH);
@@ -60,6 +61,9 @@ int main(int argc, char **argv)
                     perror("daemon");
                     exit(EXIT_FAILURE);
                 }
+                break;
+            case 's':
+                numberOfScreens=atoi(optarg);
                 break;
             case 'v':
                 verbose=1;
@@ -112,7 +116,7 @@ int main(int argc, char **argv)
                 findParentWindow(dsp,&activeWindow,&parentWin);
                 sendMouseUp(dsp,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
-                sprintf(launch,"/bin/sh %s/%s %lu",configbase,SCRIPT_NAMES[action],parentWin);
+                sprintf(launch,"/bin/sh %s/%s %lu %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,numberOfScreens,screenWidth,screenHeight);
                 system(launch);
             }
             action=0;
@@ -207,4 +211,20 @@ void getNetFrameExtents(Display *dpy, Window *w, int *top) {
         }
         XFree(data);
     }
+}
+
+int getNumberOfScreens(Display *dsp) {
+    int activeScreens=0;
+    XRRScreenResources *screen;
+    XRROutputInfo *info;
+    screen = XRRGetScreenResources(dsp,DefaultRootWindow(dsp));
+    for(int i=0; i<screen->noutput; i++){
+        info=XRRGetOutputInfo(dsp,screen,screen->outputs[i]);
+        if(info->connection==RR_Connected){
+            activeScreens++;
+        }
+        XRRFreeOutputInfo(info);
+    }
+    XRRFreeScreenResources(screen);
+    return activeScreens;
 }
