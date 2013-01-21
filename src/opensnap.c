@@ -45,13 +45,14 @@ int main(int argc, char **argv)
         {"offset",  1, NULL, 'o'},
         {"screens", 1, NULL, 's'},
         {"daemon",  0, NULL, 'd'},
+        {"info",    0, NULL, 'i'},
         {"verbose", 0, NULL, 'v'},
         {"help",    0, NULL, 'h'},
         {"version", 0, NULL, 'V'},
         {0, 0, 0, 0}};
 
     int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:ds:vVh",longopts,NULL)) != -1){
+    while((opt = getopt_long(argc,argv,"c:o:ds:ivVh",longopts,NULL)) != -1){
         switch(opt){
             case 'c':
                 strncpy(configbase,optarg,MY_MAXPATH);
@@ -65,6 +66,10 @@ int main(int argc, char **argv)
                 break;
             case 's':
                 numberOfScreens=atoi(optarg);
+                break;
+            case 'i':
+                dumpInfo(dsp);
+                exit(EXIT_SUCCESS);
                 break;
             case 'v':
                 verbose=1;
@@ -231,4 +236,11 @@ int getNumberOfScreens(Display *dsp) {
     }
     XRRFreeScreenResources(screen);
     return activeScreens;
+}
+
+void dumpInfo(Display *dsp){
+    int screenWidth, screenHeight;
+    getScreenSize(dsp,screenWidth,screenHeight);
+    printf("Detected screen size:                    %ix%i\n", screenWidth, screenHeight);
+    printf("Detected number of physical screens:     %i\n", getNumberOfScreens(dsp));
 }
