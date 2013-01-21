@@ -29,4 +29,5 @@ void getNetFrameExtents(Display *dpy, Window *w, int *top);
 void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, unsigned int *h);
 void findParentWindow(Display *dsp, Window *w, Window *parent);
 int getNumberOfScreens(Display *dsp);
+int isTitlebarHit(Display *dsp, mousestate *mousepos);
 void dumpInfo(Display *dsp);

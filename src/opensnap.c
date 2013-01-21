@@ -22,8 +22,8 @@ int main(int argc, char **argv)
 
     Window win;
     Window parentWin;
-    getFocusedWindow(dsp,&win);
-    findParentWindow(dsp,&win,&parentWin);
+    /*getFocusedWindow(dsp,&win);
+    findParentWindow(dsp,&win,&parentWin);*///i don't think we need this? not sure why i added this.
 
     int action=0;
     int verbose=0;
@@ -31,8 +31,7 @@ int main(int argc, char **argv)
     int isinitialclick=1;
     int offset=10;
     int numberOfScreens = getNumberOfScreens(dsp);
-    int titlebarHeight, x, y, junkx, junky;
-    unsigned int wi,h, junkwi, junkh;
+    int dragstartx, dragstarty;
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
@@ -103,14 +102,7 @@ int main(int argc, char **argv)
                 action=HIT_BOTTOM;
             else {
                 if(!isdrag && isinitialclick) {
-                    getFocusedWindow(dsp,&activeWindow);
-                    findParentWindow(dsp,&activeWindow,&parentWin);
-                    getNetFrameExtents(dsp,&parentWin,&titlebarHeight);
-                    getWindowRect(dsp, &parentWin, &junkx, &junky, &wi, &h);
-                    getWindowRect(dsp, &activeWindow, &x, &y, &junkwi, &junkh); // we need the size of the parent win, but the x/y coordinates of the child, don't ask me why, otherwise the values are off a bit
-                    if(verbose)printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i\n",parentWin,titlebarHeight,x,y,wi,h);
-                    if(mousepos.x>=x && mousepos.x <= (x+(int)wi) &&
-                            mousepos.y >= (y-titlebarHeight) && mousepos.y <= y){
+                    if(isTitlebarHit(dsp, &mousepos)){
                         isdrag=1;
                     }
                 }
@@ -243,4 +235,21 @@ void dumpInfo(Display *dsp){
     getScreenSize(dsp,screenWidth,screenHeight);
     printf("Detected screen size:                    %ix%i\n", screenWidth, screenHeight);
     printf("Detected number of physical screens:     %i\n", getNumberOfScreens(dsp));
+}
+
+int isTitlebarHit(Display *dsp, mousestate *mousepos){
+    int titlebarHeight, x, y, junkx, junky;
+    unsigned int wi,h, junkwi, junkh;
+    Window activeWindow, parentWin;
+    getFocusedWindow(dsp,&activeWindow);
+    findParentWindow(dsp,&activeWindow,&parentWin);
+    getNetFrameExtents(dsp,&parentWin,&titlebarHeight);
+    getWindowRect(dsp, &parentWin, &junkx, &junky, &wi, &h);
+    getWindowRect(dsp, &activeWindow, &x, &y, &junkwi, &junkh); // we need the size of the parent win, but the x/y coordinates of the child, don't ask me why, otherwise the values are off a bit
+    //if(verbose)printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i\n",parentWin,titlebarHeight,x,y,wi,h);
+    if(mousepos->x>=x && mousepos->x <= (x+(int)wi) &&
+            mousepos->y >= (y-titlebarHeight) && mousepos->y <= y){
+        return 1;
+    }
+    return 0;
 }
