@@ -3,6 +3,7 @@
 #define HIT_LEFT 2
 #define HIT_RIGHT 3
 #define HIT_BOTTOM 4
+#define HIT_UNSNAP 5
 #define MY_MAXPATH 2048
 
 
@@ -17,7 +18,8 @@ const char *SCRIPT_NAMES[] = {
     "hit_top",
     "hit_left",
     "hit_right",
-    "hit_bottom"
+    "hit_bottom",
+    "hit_unsnap"
 };
 
 
@@ -30,4 +32,5 @@ void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, u
 void findParentWindow(Display *dsp, Window *w, Window *parent);
 int getNumberOfScreens(Display *dsp);
 int isTitlebarHit(Display *dsp, mousestate *mousepos);
+int isWindowSnapped(Display *dsp, Window *w);
 void dumpInfo(Display *dsp);

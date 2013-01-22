@@ -20,7 +20,6 @@ int main(int argc, char **argv)
     int screenWidth, screenHeight;
     getScreenSize(dsp,screenWidth,screenHeight);
 
-    Window win;
     Window parentWin;
     /*getFocusedWindow(dsp,&win);
     findParentWindow(dsp,&win,&parentWin);*///i don't think we need this? not sure why i added this.
@@ -101,9 +100,21 @@ int main(int argc, char **argv)
             else if(mousepos.y>=screenHeight-offset-1)
                 action=HIT_BOTTOM;
             else {
-                if(!isdrag && isinitialclick) {
-                    if(isTitlebarHit(dsp, &mousepos)){
-                        isdrag=1;
+                if(!isdrag && isinitialclick && isTitlebarHit(dsp, &mousepos)) {
+                    isdrag=1;
+                    dragstartx = mousepos.x;
+                    dragstarty = mousepos.y;
+                }
+                if(isdrag && !isinitialclick){
+                    if(mousepos.y > (dragstarty + 10)) {
+                        if(verbose)printf("Detected possible unsnap.\n");
+                        getFocusedWindow(dsp,&activeWindow);
+                        findParentWindow(dsp,&activeWindow,&parentWin);
+                        if(isWindowSnapped(dsp,&parentWin)){
+                            if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
+                            sprintf(launch,"/bin/sh %s/%s %lu %i %i %i",configbase,SCRIPT_NAMES[HIT_UNSNAP],parentWin,numberOfScreens,screenWidth,screenHeight);
+                            system(launch);
+                        }
                     }
                 }
                 action=0;
@@ -212,6 +223,22 @@ void getNetFrameExtents(Display *dpy, Window *w, int *top) {
         }
         XFree(data);
     }
+}
+
+int isWindowSnapped(Display *dsp, Window *w){
+    Atom type, *res;
+    int format, result;
+    long *wmstate;
+    unsigned long numitems, bytesafter;
+    unsigned char *data = NULL;
+    result = XGetWindowProperty(dsp, *w, XInternAtom(dsp,"_NET_WM_STATE",false), 0, 2, false, AnyPropertyType, &type, &format, &numitems, &bytesafter, &data);
+    printf("got %i items\n",numitems);
+    XFree(data);
+    if(result == Success) {
+        return numitems > 0;
+    }
+    fprintf(stderr, "Error reading window state. Got code: %i\n", result);
+    return 0;
 }
 
 int getNumberOfScreens(Display *dsp) {

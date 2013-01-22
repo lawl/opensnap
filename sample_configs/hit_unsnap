@@ -1,0 +1,10 @@
+#!/bin/sh
+
+WINDOW_ID="$1"
+NUMBER_OF_SCREENS="$2"
+SCREEN_WIDTH="$3"
+SCREEN_HEIGHT="$4"
+
+# unsnap the window
+wmctrl -i -r "$WINDOW_ID" -b remove,maximized_horz
+wmctrl -i -r "$WINDOW_ID" -b remove,maximized_vert 
