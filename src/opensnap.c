@@ -20,7 +20,6 @@ int main(int argc, char **argv)
     int screenWidth, screenHeight;
     getScreenSize(dsp,screenWidth,screenHeight);
 
-    Window win;
     Window parentWin;
     /*getFocusedWindow(dsp,&win);
     findParentWindow(dsp,&win,&parentWin);*///i don't think we need this? not sure why i added this.
@@ -31,7 +30,6 @@ int main(int argc, char **argv)
     int isinitialclick=1;
     int offset=10;
     int numberOfScreens = getNumberOfScreens(dsp);
-    int dragstartx, dragstarty;
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
