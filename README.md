@@ -23,6 +23,33 @@ If you want to build it make sure you have these as well:
 
     sudo apt-get install build-essential libx11-dev libxrandr-dev
 
+Installing
+----------
+If you want to install opensnap from source first make sure you have git installed. (Or fetch a zip file: https://github.com/lawl/opensnap/archive/master.zip)
+
+Fetch via git:
+
+    git clone https://github.com/lawl/opensnap.git
+
+Fetch via zip:
+
+    wget https://github.com/lawl/opensnap/archive/master.zip
+
+Make sure you have all prerequisits:
+
+    sudo apt-get install build-essential libx11-dev libxrandr-dev build-essential wmctrl
+
+And finally build and install it:
+
+    cd opensnap*
+    make
+    mkdir -p ~/.config/opensnap
+    cp sample_configs/* ~/.config/opensnap/
+
+And now start opensnap by
+
+    bin/opensnap -d
+    
 
 How can I use it?
 -------------------
