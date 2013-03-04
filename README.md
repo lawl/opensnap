@@ -38,7 +38,7 @@ Fetch via zip:
 
 Make sure you have all prerequisits:
 
-    sudo apt-get install build-essential libx11-dev libxrandr-dev build-essential wmctrl
+    sudo apt-get install build-essential libx11-dev libxrandr-dev wmctrl
 
 And finally build and install it:
 
