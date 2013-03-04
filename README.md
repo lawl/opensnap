@@ -34,6 +34,7 @@ Fetch via git:
 Fetch via zip:
 
     wget https://github.com/lawl/opensnap/archive/master.zip
+    unzip master.zip
 
 Make sure you have all prerequisits:
 
