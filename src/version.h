@@ -1,1 +1,1 @@
-const char *versionstring="v1.0-10-gf83cbea";
+const char *versionstring="V1.1-0-g3d5a94f";

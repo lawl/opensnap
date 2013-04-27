@@ -1,11 +1,13 @@
 #include <stdio.h>
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <gtk/gtk.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <time.h>
 #include <cstdlib>
 #include <string.h>
-#include <X11/extensions/Xrandr.h>
 #include "xdo_functions.h"
 #include "opensnap.h"
 #include "help.h"
@@ -13,23 +15,21 @@
 
 int main(int argc, char **argv)
 {
+    gtk_init(&argc, &argv);                     
     Display *dsp = XOpenDisplay( NULL );
     if( !dsp ){ return 1; }
 
 
-    int screenWidth, screenHeight;
-    getScreenSize(dsp,screenWidth,screenHeight);
+    screens scrinfo;
+    getScreens(&scrinfo);
 
     Window parentWin;
-    /*getFocusedWindow(dsp,&win);
-    findParentWindow(dsp,&win,&parentWin);*///i don't think we need this? not sure why i added this.
 
     int action=0;
     int verbose=0;
     int isdrag=0;
     int isinitialclick=1;
     int offset=10;
-    int numberOfScreens = getNumberOfScreens(dsp);
     mousestate mousepos;
     XEvent event;
     Window activeWindow;
@@ -40,7 +40,6 @@ int main(int argc, char **argv)
     struct option longopts[] = {
         {"config",  1, NULL, 'c'},
         {"offset",  1, NULL, 'o'},
-        {"screens", 1, NULL, 's'},
         {"daemon",  0, NULL, 'd'},
         {"info",    0, NULL, 'i'},
         {"verbose", 0, NULL, 'v'},
@@ -61,11 +60,8 @@ int main(int argc, char **argv)
                     exit(EXIT_FAILURE);
                 }
                 break;
-            case 's':
-                numberOfScreens=atoi(optarg);
-                break;
             case 'i':
-                dumpInfo(dsp);
+                dumpInfo(&scrinfo);
                 exit(EXIT_SUCCESS);
                 break;
             case 'v':
@@ -87,6 +83,10 @@ int main(int argc, char **argv)
 
     while(1){
         getMousePosition(dsp, &event, &mousepos);
+        int screenWidth, screenHeight;
+        int scrnn = gdk_screen_get_monitor_at_point(gdk_screen_get_default(), mousepos.x, mousepos.y);
+        screenWidth=scrinfo.screens[scrnn].width;
+        screenHeight=scrinfo.screens[scrnn].height;
         if(verbose)
             printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
         if((LEFTCLICK & mousepos.state)==LEFTCLICK){
@@ -115,7 +115,7 @@ int main(int argc, char **argv)
                 findParentWindow(dsp,&activeWindow,&parentWin);
                 sendMouseUp(dsp,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
-                sprintf(launch,"/bin/sh %s/%s %lu %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,numberOfScreens,screenWidth,screenHeight);
+                sprintf(launch,"/bin/sh %s/%s %lu %i %i",configbase,SCRIPT_NAMES[action],parentWin,screenWidth,screenHeight);
                 system(launch);
             }
             action=0;
@@ -127,7 +127,7 @@ int main(int argc, char **argv)
         usleep(10000);
     }
     XCloseDisplay(dsp);
-
+    free(scrinfo.screens);
     return 0;
 }
 
@@ -155,19 +155,19 @@ void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
 }
 
 
-void getScreenSize(Display *dsp, int &width, int &height){
-    int num_sizes;
-    Rotation original_rotation;
-
-    Window root = RootWindow(dsp, 0);
-    XRRScreenSize *xrrs = XRRSizes(dsp, 0, &num_sizes);
-
-    XRRScreenConfiguration *conf = XRRGetScreenInfo(dsp, root);
-    SizeID original_size_id       = XRRConfigCurrentConfiguration(conf, &original_rotation);
-
-    width=xrrs[original_size_id].width;
-    height=xrrs[original_size_id].height;
-
+void getScreens(screens *scrinfo){
+    GdkScreen *screen = gdk_screen_get_default();
+    gint nmon = gdk_screen_get_n_monitors(screen);
+    scrinfo->screens = (oRectangle*) malloc(sizeof(oRectangle)*nmon);
+    scrinfo->amount=nmon;
+    for(int i=0; i < nmon; i++){
+        GdkRectangle rect;
+        gdk_screen_get_monitor_geometry(screen, i, &rect);
+        scrinfo->screens[i].x=rect.x;
+        scrinfo->screens[i].y=rect.y;
+        scrinfo->screens[i].width=rect.width;
+        scrinfo->screens[i].height=rect.height;
+    }
 }
 
 void getFocusedWindow(Display *dsp,Window *w){
@@ -212,27 +212,12 @@ void getNetFrameExtents(Display *dpy, Window *w, int *top) {
     }
 }
 
-int getNumberOfScreens(Display *dsp) {
-    int activeScreens=0;
-    XRRScreenResources *screen;
-    XRROutputInfo *info;
-    screen = XRRGetScreenResources(dsp,DefaultRootWindow(dsp));
-    for(int i=0; i<screen->noutput; i++){
-        info=XRRGetOutputInfo(dsp,screen,screen->outputs[i]);
-        if(info->connection==RR_Connected){
-            activeScreens++;
-        }
-        XRRFreeOutputInfo(info);
+void dumpInfo(screens *scrinfo){
+    for(int i=0; i<scrinfo->amount; i++) {
+        printf("Screen %i\n", i);
+        printf("\t Width:\t\t%i\n\t Height:\t%i\n\t X:\t\t%i\n\t Y:\t\t%i\n\n",
+               scrinfo->screens[i].width, scrinfo->screens[i].height, scrinfo->screens[i].x, scrinfo->screens[i].y);
     }
-    XRRFreeScreenResources(screen);
-    return activeScreens;
-}
-
-void dumpInfo(Display *dsp){
-    int screenWidth, screenHeight;
-    getScreenSize(dsp,screenWidth,screenHeight);
-    printf("Detected screen size:                    %ix%i\n", screenWidth, screenHeight);
-    printf("Detected number of physical screens:     %i\n", getNumberOfScreens(dsp));
 }
 
 int isTitlebarHit(Display *dsp, mousestate *mousepos){

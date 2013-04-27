@@ -7,10 +7,23 @@
 
 
 typedef struct {
-	int x;
-	int y;
-	int state;
+    int x;
+    int y;
+    int state;
 } mousestate;
+
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+} oRectangle;
+
+typedef struct {
+    int amount;
+    oRectangle *screens;
+} screens;
+
 
 const char *SCRIPT_NAMES[] = {
     0,
@@ -20,14 +33,12 @@ const char *SCRIPT_NAMES[] = {
     "hit_bottom"
 };
 
-
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords);
 void sendMouseUp(Display *dsp, Window *w);
-void getScreenSize(Display *dsp,int &width, int &height);
+void getScreens(screens* scrinfo);
 void getFocusedWindow(Display *dsp,Window *w);
 void getNetFrameExtents(Display *dpy, Window *w, int *top);
 void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, unsigned int *h);
 void findParentWindow(Display *dsp, Window *w, Window *parent);
-int getNumberOfScreens(Display *dsp);
 int isTitlebarHit(Display *dsp, mousestate *mousepos);
-void dumpInfo(Display *dsp);
+void dumpInfo(screens *scrinfo);
