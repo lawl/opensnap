@@ -21,7 +21,7 @@ On most debian systems you should be able to install it by:
 
 If you want to build it make sure you have these as well:
 
-    sudo apt-get install build-essential libx11-dev libxrandr-dev
+    sudo apt-get install build-essential libx11-dev libgtk-3-dev
 
 Installing
 ----------
@@ -38,7 +38,7 @@ Fetch via zip:
 
 Make sure you have all prerequisits:
 
-    sudo apt-get install build-essential libx11-dev libxrandr-dev wmctrl
+    sudo apt-get install build-essential libx11-dev libgtk-3-dev wmctrl
 
 And finally build and install it:
 
