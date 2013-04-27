@@ -29,6 +29,7 @@ int main(int argc, char **argv)
     int isinitialclick=1;
     int offset=10;
     mousestate mousepos;
+    mousestate relativeMousepos;
     XEvent event;
     Window activeWindow;
     char launch[MY_MAXPATH];
@@ -81,20 +82,21 @@ int main(int argc, char **argv)
 
     while(1){
         getMousePosition(dsp, &event, &mousepos);
-        int screenWidth, screenHeight;
-        int scrnn = gdk_screen_get_monitor_at_point(gdk_screen_get_default(), mousepos.x, mousepos.y);
-        screenWidth=scrinfo.screens[scrnn].width;
-        screenHeight=scrinfo.screens[scrnn].height;
+        int scrnn;
+        scrnn = gdk_screen_get_monitor_at_point(gdk_screen_get_default(), mousepos.x, mousepos.y);
+        //make mouse coordinates relative to screen
+        relativeMousepos.x=mousepos.x-scrinfo.screens[scrnn].x;
+        relativeMousepos.y=mousepos.y-scrinfo.screens[scrnn].y;
         if(verbose)
             printf("Mouse Coordinates: %d %d %d\n", mousepos.x, mousepos.y, mousepos.state );
         if((LEFTCLICK & mousepos.state)==LEFTCLICK){
-            if(mousepos.y<=offset)
+            if(relativeMousepos.y<=offset)
                 action=HIT_TOP;
-            else if(mousepos.x<=offset)
+            else if(relativeMousepos.x<=offset)
                 action=HIT_LEFT;
-            else if(mousepos.x>=screenWidth-offset-1)
+            else if(relativeMousepos.x>=scrinfo.screens[scrnn].width-offset-1)
                 action=HIT_RIGHT;
-            else if(mousepos.y>=screenHeight-offset-1)
+            else if(relativeMousepos.y>=scrinfo.screens[scrnn].height-offset-1)
                 action=HIT_BOTTOM;
             else {
                 if(!isdrag && isinitialclick) {
@@ -113,7 +115,8 @@ int main(int argc, char **argv)
                 findParentWindow(dsp,&activeWindow,&parentWin);
                 sendMouseUp(dsp,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
-                sprintf(launch,"/bin/sh %s/%s %lu %i %i",configbase,SCRIPT_NAMES[action],parentWin,screenWidth,screenHeight);
+                sprintf(launch,"/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
+                        scrinfo.screens[scrnn].width,scrinfo.screens[scrnn].height,scrinfo.screens[scrnn].x, scrinfo.screens[scrnn].y);
                 system(launch);
             }
             action=0;
@@ -227,7 +230,6 @@ int isTitlebarHit(Display *dsp, mousestate *mousepos){
     getNetFrameExtents(dsp,&parentWin,&titlebarHeight);
     getWindowRect(dsp, &parentWin, &junkx, &junky, &wi, &h);
     getWindowRect(dsp, &activeWindow, &x, &y, &junkwi, &junkh); // we need the size of the parent win, but the x/y coordinates of the child, don't ask me why, otherwise the values are off a bit
-    printf("Active window: %lu, titlebarheight: %i x: %i, y: %i, w: %i, h: %i jx: %i, jy: %i, jw: %i, jh: %i\n",parentWin,titlebarHeight,x,y,wi,h,junkx,junky,junkwi,junkh);
     if(y==junky){
         y-=titlebarHeight; //Qt hack
     }

@@ -3,11 +3,13 @@
 WINDOW_ID="$1"
 SCREEN_WIDTH="$2"
 SCREEN_HEIGHT="$3"
+SCREEN_OFFSET_X="$4"
+SCREEN_OFFSET_Y="$5"
 
 GRAVITY="0"
 WIDTH="$(($SCREEN_WIDTH/2))"
 HEIGHT="-1"
-X="$(($SCREEN_WIDTH-$WIDTH))"
+X="$(($SCREEN_OFFSET_X+$SCREEN_WIDTH-$WIDTH))"
 Y="0"
 
 # we need to remove the maximized_horz attribute in case the window was maximized with hit_top before
