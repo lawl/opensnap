@@ -113,7 +113,6 @@ int main(int argc, char **argv)
             if(action){
                 getFocusedWindow(dsp,&activeWindow);
                 findParentWindow(dsp,&activeWindow,&parentWin);
-                sendMouseUp(dsp,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
                 sprintf(launch,"/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
                         scrinfo.screens[scrnn].width,scrinfo.screens[scrnn].height,scrinfo.screens[scrnn].x, scrinfo.screens[scrnn].y);
@@ -130,18 +129,6 @@ int main(int argc, char **argv)
     XCloseDisplay(dsp);
     free(scrinfo.screens);
     return 0;
-}
-
-void sendMouseUp(Display *dsp, Window *w){
-    XEvent event;
-    memset(&event, 0x00, sizeof(event));
-    event.type = ButtonRelease;
-    event.xbutton.button = 1;
-    event.xbutton.state = 0x100;
-    event.xbutton.same_screen = True;
-    XSendEvent(dsp, *w, True, 0xfff, &event);
-    XFlush(dsp);
-
 }
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
