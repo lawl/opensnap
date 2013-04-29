@@ -47,7 +47,7 @@ int main(int argc, char **argv)
         {0, 0, 0, 0}};
 
     int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:ds:ivVh",longopts,NULL)) != -1){
+    while((opt = getopt_long(argc,argv,"c:o:divVh",longopts,NULL)) != -1){
         switch(opt){
             case 'c':
                 strncpy(configbase,optarg,MY_MAXPATH);
