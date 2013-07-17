@@ -8,7 +8,8 @@ Opensnap brings the Aero Snap feature to Openbox.
 Report more bugs!
 ------------
 ![report bugs please](http://i.imgur.com/aF6eyZy.png)
-If you didn't find any bugs, feel free to drop me a message at opensnap{ät]dumbinter[döt}net anyways. I'm happy for any feedback.
+
+If you didn't find any bugs, feel free to drop me a message at opensnap{ät]dumbinter[döt}net anyways. I'm happy for any feedback. But please report bugs on github if possible.
 
 
 Does this work with other window managers?
