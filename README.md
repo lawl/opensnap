@@ -55,15 +55,22 @@ And finally build and install it:
 
 And now start opensnap by
 
-    bin/opensnap -d
+    bin/opensnap --daemon
     
 
 How can I use it?
--------------------
+-----------------
 This should tell you all you need to know:
 
-    opensnap -h
+    opensnap --help
 
-Copy the sample configs to ~/.config/opensnap/ (and edit them if needed).
+Copy the sample configs to ~/.config/opensnap/.
 
-They are mostly self explaining.
+
+Unsnap workaround
+-----------------
+
+As of now opensnap does not support unsnapping (see #4).
+You can find a workaround here: https://github.com/lawl/opensnap/issues/4#issuecomment-23666097
+
+Do note however that this does not perfect unsnapping. I.e. your cursor possition and the window you are dragging might get displaced a bit on unsnapping. But it does work well enough for daily use.
