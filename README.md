@@ -5,12 +5,18 @@ What's that?
 ------------
 Opensnap brings the Aero Snap feature to Openbox.
 
-Report more bugs!
+Eternal Code freeze (kinda probably)
 ------------
-![report bugs please](http://i.imgur.com/aF6eyZy.png)
+The state of X is REALLY, REALLY horrible. I didn't know what I was getting in to when I started the POC of opensnap. So I'm declaring an eternal code freeze. Meaning I will probably not add features or fix bugs that can be workarounded.
 
-If you didn't find any bugs, feel free to drop me a message at opensnap{ät]dumbinter[döt}net anyways. I'm happy for any feedback. But please report bugs on github if possible.
+Known bugs you just have to work around:
 
+* No "unsnapping" feature (see end of this file for workaround)
+* opensnap doesn't detect screen layout changes (just restart opensnap)
+
+Sorry, opensnap works fine enough for me in it's current state and I'm really not too keen on messing more with X API's.
+If you encounter a bug, you can either report it here, maybe I'll fix it, no guarantees though.
+Or fork opensnap and fix it yourself. (And optionally send me a pull request)
 
 Does this work with other window managers?
 ------------------------------------------
