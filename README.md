@@ -18,6 +18,8 @@ Sorry, opensnap works fine enough for me in it's current state and I'm really no
 If you encounter a bug, you can either report it here, maybe I'll fix it, no guarantees though.
 Or fork opensnap and fix it yourself. (And optionally send me a pull request)
 
+But hey, opensnap is still in use by quite a few people, including me, and it works. It's not perfect but good enough for daily use. So you might still want to give it a shot.
+
 Does this work with other window managers?
 ------------------------------------------
 The goal was to make it work with every EWMH compliant window manager.
