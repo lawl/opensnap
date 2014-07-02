@@ -110,7 +110,7 @@ int main(int argc, char **argv)
         }
         if(verbose)printf("action is: %d, isdrag is: %d\n",action,isdrag);
         if(((16 & mousepos.state) == mousepos.state ||
-            (24 & mousepos.state) == mousepos.state) && isdrag){
+            (8  & mousepos.state) == mousepos.state) && isdrag){
 
             if(action){
                 getFocusedWindow(dsp,&activeWindow);
