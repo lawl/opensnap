@@ -108,7 +108,7 @@ int main(int argc, char **argv)
             }
             isinitialclick=false;
         }
-        if(verbose)printf("action is: %d, isdrag is: %d\n",action,isdrag);
+        if(verbose)printf("action is: %d, isdrag is: %d, state is: %i\n",action,isdrag, mousepos.state);
         if(((16 & mousepos.state) == mousepos.state ||
             (WINDRAG_KEY  & mousepos.state) == mousepos.state) && isdrag){
 
