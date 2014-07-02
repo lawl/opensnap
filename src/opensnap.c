@@ -100,7 +100,7 @@ int main(int argc, char **argv)
                 action=HIT_BOTTOM;
             else {
                 if(!isdrag && isinitialclick) {
-                    if(isTitlebarHit(dsp, &mousepos) || mousepos.state & 8){
+                    if(isTitlebarHit(dsp, &mousepos) || mousepos.state & WINDRAG_KEY){
                         isdrag=1;
                     }
                 }
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
         }
         if(verbose)printf("action is: %d, isdrag is: %d\n",action,isdrag);
         if(((16 & mousepos.state) == mousepos.state ||
-            (8  & mousepos.state) == mousepos.state) && isdrag){
+            (WINDRAG_KEY  & mousepos.state) == mousepos.state) && isdrag){
 
             if(action){
                 getFocusedWindow(dsp,&activeWindow);
