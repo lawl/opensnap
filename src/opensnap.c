@@ -1,11 +1,15 @@
+#define  _GNU_SOURCE
+
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <gtk/gtk.h>
 #include <unistd.h>
 #include <getopt.h>
 #include <time.h>
-#include <cstdlib>
+#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
+
 #include "xdo_functions.h"
 #include "opensnap.h"
 #include "help.h"
@@ -106,7 +110,7 @@ int main(int argc, char **argv)
                 }
                 action=0;
             }
-            isinitialclick=false;
+            isinitialclick=0;
         }
         if(verbose)printf("action is: %d, isdrag is: %d, state is: %i\n",action,isdrag, mousepos.state);
         if(((16 & mousepos.state) == mousepos.state ||
