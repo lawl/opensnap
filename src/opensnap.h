@@ -42,3 +42,4 @@ void getWindowRect(Display *dsp, Window *win, int *x, int *y, unsigned int *w, u
 void findParentWindow(Display *dsp, Window *w, Window *parent);
 int isTitlebarHit(Display *dsp, mousestate *mousepos);
 void dumpInfo(screens *scrinfo);
+void parseOpts(int argc, char **argv);

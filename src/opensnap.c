@@ -15,78 +15,44 @@
 #include "help.h"
 #include "version.h"
 
+// global config values sourced by getopt
+int verbose=0;
+int offset=10;
+char configbase[MY_MAXPATH];
+//initialized at startup
+screens scrinfo;
+
 int main(int argc, char **argv)
 {
     gtk_init(&argc, &argv);                     
     Display *dsp = XOpenDisplay( NULL );
     if( !dsp ){ return 1; }
 
-
-    screens scrinfo;
     getScreens(&scrinfo);
 
     Window parentWin;
 
     int action=0;
-    int verbose=0;
     int isdrag=0;
     int isinitialclick=1;
-    int offset=10;
+    int scrnn;
+    
+    char launch[MY_MAXPATH];
+    
     mousestate mousepos;
     mousestate relativeMousepos;
+    
     XEvent event;
     Window activeWindow;
-    char launch[MY_MAXPATH];
-    char configbase[MY_MAXPATH];
+    
+    
     strcpy(configbase,"~/.config/opensnap/");
+    
+    parseOpts(argc, argv);
 
-    struct option longopts[] = {
-        {"config",  1, NULL, 'c'},
-        {"offset",  1, NULL, 'o'},
-        {"daemon",  0, NULL, 'd'},
-        {"info",    0, NULL, 'i'},
-        {"verbose", 0, NULL, 'v'},
-        {"help",    0, NULL, 'h'},
-        {"version", 0, NULL, 'V'},
-        {0, 0, 0, 0}};
-
-    int opt=0;
-    while((opt = getopt_long(argc,argv,"c:o:divVh",longopts,NULL)) != -1){
-        switch(opt){
-            case 'c':
-                strncpy(configbase,optarg,MY_MAXPATH);
-                configbase[MY_MAXPATH-1]='\0';
-                break;
-            case 'd':
-                if(daemon(0,0) == -1){
-                    perror("daemon");
-                    exit(EXIT_FAILURE);
-                }
-                break;
-            case 'i':
-                dumpInfo(&scrinfo);
-                exit(EXIT_SUCCESS);
-                break;
-            case 'v':
-                verbose=1;
-                break;
-            case 'V':
-                printf("opensnap version %s\n", versionstring);
-                exit(EXIT_SUCCESS);
-            case 'o':
-                offset=atoi(optarg);
-                break;
-            case 'h':
-            case '?':
-                printHelp();
-                exit(EXIT_FAILURE);
-                break;
-        }
-    }
 
     while(1){
         getMousePosition(dsp, &event, &mousepos);
-        int scrnn;
         scrnn = gdk_screen_get_monitor_at_point(gdk_screen_get_default(), mousepos.x, mousepos.y);
         //make mouse coordinates relative to screen
         relativeMousepos.x=mousepos.x-scrinfo.screens[scrnn].x;
@@ -135,6 +101,52 @@ int main(int argc, char **argv)
     XCloseDisplay(dsp);
     free(scrinfo.screens);
     return 0;
+}
+
+void parseOpts(int argc, char **argv){
+	struct option longopts[] = {
+        {"config",  1, NULL, 'c'},
+        {"offset",  1, NULL, 'o'},
+        {"daemon",  0, NULL, 'd'},
+        {"info",    0, NULL, 'i'},
+        {"verbose", 0, NULL, 'v'},
+        {"help",    0, NULL, 'h'},
+        {"version", 0, NULL, 'V'},
+        {0, 0, 0, 0}};
+
+    int opt=0;
+    while((opt = getopt_long(argc,argv,"c:o:divVh",longopts,NULL)) != -1){
+        switch(opt){
+            case 'c':
+                strncpy(configbase,optarg,MY_MAXPATH);
+                configbase[MY_MAXPATH-1]='\0';
+                break;
+            case 'd':
+                if(daemon(0,0) == -1){
+                    perror("daemon");
+                    exit(EXIT_FAILURE);
+                }
+                break;
+            case 'i':
+                dumpInfo(&scrinfo);
+                exit(EXIT_SUCCESS);
+                break;
+            case 'v':
+                verbose=1;
+                break;
+            case 'V':
+                printf("opensnap version %s\n", versionstring);
+                exit(EXIT_SUCCESS);
+            case 'o':
+                offset=atoi(optarg);
+                break;
+            case 'h':
+            case '?':
+                printHelp();
+                exit(EXIT_FAILURE);
+                break;
+        }
+    }
 }
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
