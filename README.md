@@ -27,13 +27,13 @@ The goal was to make it work with every EWMH compliant window manager.
 
 Dependencies?
 -------------
-You'll need wmctrl.
+With the default configuration, you'll need wmctrl as a runtime dependency.
 
 On most debian systems you should be able to install it by:
 
     sudo apt-get install wmctrl
 
-If you want to build it make sure you have these as well:
+If you want to build opensnap from source make sure you have these as well:
 
     sudo apt-get install build-essential libx11-dev libgtk-3-dev
 
@@ -58,13 +58,27 @@ And finally build and install it:
 
     cd opensnap*
     make
-    mkdir -p ~/.config/opensnap
-    cp sample_configs/* ~/.config/opensnap/
+    sudo make install
 
-And now start opensnap by
+And now start opensnap with
 
-    bin/opensnap --daemon
+    opensnap
+
+or
+
+    opensnap --deamon
+
+if you want it to deamonize.
     
+Customizing the configuration
+-----------------------------
+By default opensnap stores its configuration files in /etc/opensnap if you've run `make install`.
+If you want to customize these, you should copy the global configuration to your user directory.
+
+    mkdir -p ~/.config/opensnap
+    cp /etc/opensnap/* ~/.config/opensnap/
+
+You can now edit the configuration files in `~/.config/opensnap/`. Make sure to restart opensnap for it to see the new configuration directory.
 
 How can I use it?
 -----------------
