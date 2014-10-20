@@ -6,6 +6,8 @@
 #define HIT_BOTTOM 4
 #define MY_MAXPATH 2048
 
+#define GLOBAL_CONFPATH "/etc/opensnap/"
+
 
 typedef struct {
     int x;
@@ -43,3 +45,5 @@ void findParentWindow(Display *dsp, Window *w, Window *parent);
 int isTitlebarHit(Display *dsp, mousestate *mousepos);
 void dumpInfo(screens *scrinfo);
 void parseOpts(int argc, char **argv);
+int directoryExists(char* path);
+void findAndSetDefaultConfigDir();

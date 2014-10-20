@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include "xdo_functions.h"
 #include "opensnap.h"
@@ -18,7 +21,7 @@
 // global config values sourced by getopt
 int verbose=0;
 int offset=10;
-char configbase[MY_MAXPATH];
+char configbase[MY_MAXPATH]={'\0'};
 //initialized at startup
 screens scrinfo;
 
@@ -45,11 +48,13 @@ int main(int argc, char **argv)
     XEvent event;
     Window activeWindow;
     
-    
-    strcpy(configbase,"~/.config/opensnap/");
+    findAndSetDefaultConfigDir();
     
     parseOpts(argc, argv);
-
+    
+    if(!directoryExists(configbase)) {
+		fprintf(stderr, "Warning: Configuration folder '%s' does not seem to exist.\n", configbase);
+	}
 
     while(1){
         getMousePosition(dsp, &event, &mousepos);
@@ -149,6 +154,20 @@ void parseOpts(int argc, char **argv){
     }
 }
 
+void findAndSetDefaultConfigDir() {
+	char *home = getenv("HOME");
+	strncpy(configbase, home, MY_MAXPATH);
+	configbase[MY_MAXPATH-1]='\0';
+    strncat(configbase, "/.config/opensnap/", MY_MAXPATH - strlen(configbase) - 1);
+    configbase[MY_MAXPATH-1]='\0';
+	
+    if(directoryExists(configbase)){
+		return;
+	}
+		
+	strcpy(configbase, GLOBAL_CONFPATH);
+}
+
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
     XQueryPointer(dsp, RootWindow(dsp, DefaultScreen(dsp)),
             &event->xbutton.root, &event->xbutton.window,
@@ -160,6 +179,20 @@ void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
     cords->state=event->xbutton.state;
 }
 
+int directoryExists(char* path){
+	struct stat s;
+	int err = stat(path, &s);
+	if(-1 == err) {
+		if(ENOENT == errno) {
+			return 0;
+		} else {
+			perror("stat");
+			exit(1);
+		}
+	} else {
+		return 1;
+	}
+}
 
 void getScreens(screens *scrinfo){
     GdkScreen *screen = gdk_screen_get_default();
