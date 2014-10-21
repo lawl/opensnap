@@ -158,10 +158,10 @@ void findAndSetDefaultConfigDir() {
 	if(home == NULL) {
 		goto fallback;
 	}
-	strncpy(configbase, home, MY_MAXPATH);
-	configbase[MY_MAXPATH-1]='\0';
-    strncat(configbase, "/.config/opensnap/", MY_MAXPATH - strlen(configbase) - 1);
-    configbase[MY_MAXPATH-1]='\0';
+	strncpy(configbase, home, sizeof(configbase));
+	configbase[sizeof(configbase)-1]='\0';
+    strncat(configbase, "/.config/opensnap/", sizeof(configbase) - strlen(configbase) - 1);
+    configbase[sizeof(configbase)-1]='\0';
 	
     if(directoryExists(configbase)){
 		return;
