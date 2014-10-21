@@ -38,22 +38,22 @@ int main(int argc, char **argv)
     int isdrag=0;
     int isinitialclick=1;
     int scrnn;
-    
+
     char launch[MY_MAXPATH*2];
-    
+
     mousestate mousepos;
     mousestate relativeMousepos;
-    
+
     XEvent event;
     Window activeWindow;
-    
+
     findAndSetDefaultConfigDir();
-    
+
     parseOpts(argc, argv);
-    
+
     if(!directoryExists(configbase)) {
-		fprintf(stderr, "Warning: Configuration folder '%s' does not seem to exist.\n", configbase);
-	}
+        fprintf(stderr, "Warning: Configuration folder '%s' does not seem to exist.\n", configbase);
+    }
 
     while(1){
         getMousePosition(dsp, &event, &mousepos);
@@ -84,7 +84,7 @@ int main(int argc, char **argv)
         }
         if(verbose)printf("action is: %d, isdrag is: %d, state is: %i\n",action,isdrag, mousepos.state);
         if(((16 & mousepos.state) == mousepos.state ||
-            (WINDRAG_KEY  & mousepos.state) == mousepos.state) && isdrag){
+                    (WINDRAG_KEY  & mousepos.state) == mousepos.state) && isdrag){
 
             if(action){
                 getFocusedWindow(dsp,&activeWindow);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
 }
 
 void parseOpts(int argc, char **argv){
-	struct option longopts[] = {
+    struct option longopts[] = {
         {"config",  1, NULL, 'c'},
         {"offset",  1, NULL, 'o'},
         {"daemon",  0, NULL, 'd'},
@@ -154,21 +154,21 @@ void parseOpts(int argc, char **argv){
 }
 
 void findAndSetDefaultConfigDir() {
-	char *home = getenv("HOME");
-	if(home == NULL) {
-		goto fallback;
-	}
-	strncpy(configbase, home, sizeof(configbase));
+    char *home = getenv("HOME");
+    if(home == NULL) {
+        goto fallback;
+    }
+    strncpy(configbase, home, sizeof(configbase));
     strncat(configbase, "/.config/opensnap/", sizeof(configbase) - strlen(configbase) - 1);
-	configbase[sizeof(configbase)-1]='\0';
     configbase[sizeof(configbase)-1]='\0';
-	
+    configbase[sizeof(configbase)-1]='\0';
+
     if(directoryExists(configbase)){
-		return;
-	}
-	
-	fallback:
-	strncpy(configbase, GLOBAL_CONFPATH, sizeof(configbase));
+        return;
+    }
+
+fallback:
+    strncpy(configbase, GLOBAL_CONFPATH, sizeof(configbase));
 }
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
@@ -183,18 +183,18 @@ void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
 }
 
 int directoryExists(char* path){
-	struct stat s;
-	int err = stat(path, &s);
-	if(-1 == err) {
-		if(ENOENT == errno) {
-			return 0;
-		} else {
-			perror("stat");
-			exit(1);
-		}
-	} else {
-		return 1;
-	}
+    struct stat s;
+    int err = stat(path, &s);
+    if(-1 == err) {
+        if(ENOENT == errno) {
+            return 0;
+        } else {
+            perror("stat");
+            exit(1);
+        }
+    } else {
+        return 1;
+    }
 }
 
 void getScreens(screens *scrinfo){
@@ -236,15 +236,15 @@ void getNetFrameExtents(Display *dpy, Window *w, int *top) {
     unsigned long nitems, bytes_after;
     unsigned char *data = NULL;
     int result;
-     
+
     *top = 0;
-     
+
     result = XGetWindowProperty(
             dpy, *w, XInternAtom(dpy, "_NET_FRAME_EXTENTS", False),
             0, 4, False, AnyPropertyType,
             &actual_type, &actual_format,
             &nitems, &bytes_after, &data);
-     
+
     if (result == Success) {
         if ((nitems == 4) && (bytes_after == 0)) {
             extents = (long *)data;
@@ -258,7 +258,7 @@ void dumpInfo(screens *scrinfo){
     for(int i=0; i<scrinfo->amount; i++) {
         printf("Screen %i\n", i);
         printf("\t Width:\t\t%i\n\t Height:\t%i\n\t X:\t\t%i\n\t Y:\t\t%i\n\n",
-               scrinfo->screens[i].width, scrinfo->screens[i].height, scrinfo->screens[i].x, scrinfo->screens[i].y);
+                scrinfo->screens[i].width, scrinfo->screens[i].height, scrinfo->screens[i].x, scrinfo->screens[i].y);
     }
 }
 
