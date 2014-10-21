@@ -159,8 +159,8 @@ void findAndSetDefaultConfigDir() {
 		goto fallback;
 	}
 	strncpy(configbase, home, sizeof(configbase));
-	configbase[sizeof(configbase)-1]='\0';
     strncat(configbase, "/.config/opensnap/", sizeof(configbase) - strlen(configbase) - 1);
+	configbase[sizeof(configbase)-1]='\0';
     configbase[sizeof(configbase)-1]='\0';
 	
     if(directoryExists(configbase)){
@@ -168,7 +168,7 @@ void findAndSetDefaultConfigDir() {
 	}
 	
 	fallback:
-	strcpy(configbase, GLOBAL_CONFPATH);
+	strncpy(configbase, GLOBAL_CONFPATH), sizeof(configbase);
 }
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
