@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     int isinitialclick=1;
     int scrnn;
     
-    char launch[MY_MAXPATH];
+    char launch[MY_MAXPATH*2];
     
     mousestate mousepos;
     mousestate relativeMousepos;
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
                 getFocusedWindow(dsp,&activeWindow);
                 findParentWindow(dsp,&activeWindow,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
-                sprintf(launch,"/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
+                snprintf(launch, MY_MAXPATH*2, "/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
                         scrinfo.screens[scrnn].width,scrinfo.screens[scrnn].height,scrinfo.screens[scrnn].x, scrinfo.screens[scrnn].y);
                 system(launch);
             }
@@ -155,6 +155,9 @@ void parseOpts(int argc, char **argv){
 
 void findAndSetDefaultConfigDir() {
 	char *home = getenv("HOME");
+	if(home == NULL) {
+		goto fallback;
+	}
 	strncpy(configbase, home, MY_MAXPATH);
 	configbase[MY_MAXPATH-1]='\0';
     strncat(configbase, "/.config/opensnap/", MY_MAXPATH - strlen(configbase) - 1);
@@ -163,7 +166,8 @@ void findAndSetDefaultConfigDir() {
     if(directoryExists(configbase)){
 		return;
 	}
-		
+	
+	fallback:
 	strcpy(configbase, GLOBAL_CONFPATH);
 }
 
