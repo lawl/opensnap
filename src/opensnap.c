@@ -168,7 +168,7 @@ void findAndSetDefaultConfigDir() {
 	}
 	
 	fallback:
-	strncpy(configbase, GLOBAL_CONFPATH), sizeof(configbase);
+	strncpy(configbase, GLOBAL_CONFPATH, sizeof(configbase);
 }
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords){
