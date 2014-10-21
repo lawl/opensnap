@@ -90,7 +90,7 @@ int main(int argc, char **argv)
                 getFocusedWindow(dsp,&activeWindow);
                 findParentWindow(dsp,&activeWindow,&parentWin);
                 if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
-                snprintf(launch, MY_MAXPATH*2, "/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
+                snprintf(launch, sizeof(launch), "/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
                         scrinfo.screens[scrnn].width,scrinfo.screens[scrnn].height,scrinfo.screens[scrnn].x, scrinfo.screens[scrnn].y);
                 system(launch);
             }
