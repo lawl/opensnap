@@ -37,6 +37,7 @@ const char *SCRIPT_NAMES[] = {
 };
 
 void getMousePosition(Display *dsp, XEvent *event, mousestate *cords);
+int getMonitorNumber(GdkMonitor *monitor);
 void getScreens(screens* scrinfo);
 void getFocusedWindow(Display *dsp,Window *w);
 void getNetFrameExtents(Display *dpy, Window *w, int *top);

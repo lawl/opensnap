@@ -57,7 +57,9 @@ int main(int argc, char **argv)
 
     while(1){
         getMousePosition(dsp, &event, &mousepos);
-        scrnn = gdk_screen_get_monitor_at_point(gdk_screen_get_default(), mousepos.x, mousepos.y);
+        //scrnn = gdk_screen_get_monitor_at_point(gdk_screen_get_default(), mousepos.x, mousepos.y);
+        GdkMonitor * mon = gdk_display_get_monitor_at_point(gdk_display_get_default(), mousepos.x, mousepos.y);
+        scrnn = getMonitorNumber(mon);
         //make mouse coordinates relative to screen
         relativeMousepos.x=mousepos.x-scrinfo.screens[scrnn].x;
         relativeMousepos.y=mousepos.y-scrinfo.screens[scrnn].y;
@@ -82,14 +84,14 @@ int main(int argc, char **argv)
             }
             isinitialclick=0;
         }
-        if(verbose)printf("action is: %d, isdrag is: %d, state is: %i\n",action,isdrag, mousepos.state);
+        if(verbose) printf("action is: %d, isdrag is: %d, state is: %i\n",action,isdrag, mousepos.state);
         if(((16 & mousepos.state) == mousepos.state ||
                     (WINDRAG_KEY  & mousepos.state) == mousepos.state) && isdrag){
 
             if(action){
                 getFocusedWindow(dsp,&activeWindow);
                 findParentWindow(dsp,&activeWindow,&parentWin);
-                if(verbose)printf("Running script: %s",SCRIPT_NAMES[action]);
+                if(verbose) printf("Running script: %s",SCRIPT_NAMES[action]);
                 snprintf(launch, sizeof(launch), "/bin/sh %s/%s %lu %i %i %i %i",configbase,SCRIPT_NAMES[action],parentWin,
                         scrinfo.screens[scrnn].width,scrinfo.screens[scrnn].height,scrinfo.screens[scrnn].x, scrinfo.screens[scrnn].y);
                 system(launch);
@@ -197,14 +199,29 @@ int directoryExists(char* path){
     }
 }
 
-void getScreens(screens *scrinfo){
-    GdkScreen *screen = gdk_screen_get_default();
-    gint nmon = gdk_screen_get_n_monitors(screen);
+int getMonitorNumber(GdkMonitor *monitor)
+{
+    GdkDisplay *display;
+    int n_monitors, i;
+
+    display = gdk_monitor_get_display(monitor);
+    n_monitors = gdk_display_get_n_monitors(display);
+    for(i = 0; i < n_monitors; i++){
+        if(gdk_display_get_monitor(display, i) == monitor)
+        return i;
+    }
+    return -1;
+}
+
+void getScreens(screens *scrinfo){    
+    int nmon = gdk_display_get_n_monitors(gdk_display_get_default());
+
     scrinfo->screens = (oRectangle*) malloc(sizeof(oRectangle)*nmon);
     scrinfo->amount=nmon;
+
     for(int i=0; i < nmon; i++){
         GdkRectangle rect;
-        gdk_screen_get_monitor_geometry(screen, i, &rect);
+        gdk_monitor_get_geometry(gdk_display_get_monitor(gdk_display_get_default(), i), &rect);
         scrinfo->screens[i].x=rect.x;
         scrinfo->screens[i].y=rect.y;
         scrinfo->screens[i].width=rect.width;
@@ -245,8 +262,8 @@ void getNetFrameExtents(Display *dpy, Window *w, int *top) {
             &actual_type, &actual_format,
             &nitems, &bytes_after, &data);
 
-    if (result == Success) {
-        if ((nitems == 4) && (bytes_after == 0)) {
+    if(result == Success) {
+        if((nitems == 4) && (bytes_after == 0)) {
             extents = (long *)data;
             *top = (int) *(extents + 2);
         }
