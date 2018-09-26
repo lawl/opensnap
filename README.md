@@ -5,7 +5,7 @@ What's that?
 ------------
 Opensnap brings the Aero Snap feature to Openbox.
 
-Eternal Code freeze (kinda probably)
+End of Life (kinda probably)
 ------------
 The state of X is REALLY, REALLY horrible. I didn't know what I was getting in to when I started the POC of opensnap. So I'm declaring an eternal code freeze. Meaning I will probably not add features or fix bugs that can be workarounded.
 
@@ -69,6 +69,10 @@ or
     opensnap --deamon
 
 if you want it to deamonize.
+
+Gentoo
+-------
+Someone has prepared an overlay [here](https://github.com/mundis/overlay), that among other things include opensnap. *Be careful when adding untrusted overlays, treat it as giving this person full access to your computer, just as you are giving me full access to your computer if you compile and install opensnap, without reading the code.*
     
 Customizing the configuration
 -----------------------------
